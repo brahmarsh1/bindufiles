@@ -1,4 +1,11 @@
--- Ensure Lazy.nvim is installed
+-- Disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
+-- Plugin Management with Lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -8,14 +15,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Plugin Management with Lazy.nvim
 require("lazy").setup({
   -- Debugging (DAP)
-  { "mfussenegger/nvim-dap" },   -- Core Debugger
-  { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } }, -- UI for Debugging
-  { "leoluz/nvim-dap-go" },      -- Go Debugging
-  { "simrat39/rust-tools.nvim" },-- Rust LSP & Debugging
-  { "nvim-neotest/nvim-nio" },   -- Fix for `nvim-dap-ui` dependency
+  { "mfussenegger/nvim-dap" },
+  { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
+  { "leoluz/nvim-dap-go" },
+  { "simrat39/rust-tools.nvim" },
+  { "nvim-neotest/nvim-nio" },
 
   -- Treesitter (Better Syntax Highlighting)
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
@@ -24,16 +30,32 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 
   -- LSP and Auto-completion
-  { "neovim/nvim-lspconfig" },  -- Language Server Protocol
-  { "hrsh7th/nvim-cmp" },       -- Completion Engine
-  { "hrsh7th/cmp-nvim-lsp" },   -- LSP Completion
-  { "saadparwaiz1/cmp_luasnip" }, -- Snippets completion
-  { "L3MON4D3/LuaSnip" },        -- Snippets Engine
+  { "neovim/nvim-lspconfig" },
+  { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/cmp-nvim-lsp" },
+  { "saadparwaiz1/cmp_luasnip" },
+  { "L3MON4D3/LuaSnip" },
 
   -- UI Enhancements
-  { "nvim-lualine/lualine.nvim" },  -- Status bar
-  { "kyazdani42/nvim-tree.lua" },  -- File explorer
-  { "folke/tokyonight.nvim" },     -- Theme
+  { "nvim-lualine/lualine.nvim" },
+  { "kyazdani42/nvim-tree.lua", dependencies = "nvim-tree/nvim-web-devicons" },
+  { "folke/tokyonight.nvim" },
+})
+
+-- Setup nvim-tree
+require("nvim-tree").setup({
+  sort = {
+    sorter = "case_sensitive",
+  },
+  view = {
+    width = 30,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
 })
 
 -- DAP Setup (Rust & Go Debugging)
@@ -44,7 +66,7 @@ require("dapui").setup()
 local dap = require("dap")
 dap.adapters.lldb = {
   type = "executable",
-  command = "/usr/bin/lldb-vscode", -- Ensure `lldb-vscode` is installed
+  command = "/usr/bin/lldb-vscode",
   name = "lldb"
 }
 
@@ -98,7 +120,7 @@ vim.keymap.set("n", "<Leader>ff", ":Telescope find_files<CR>", { desc = "Find Fi
 vim.keymap.set("n", "<Leader>fg", ":Telescope live_grep<CR>", { desc = "Live Grep" })
 
 -- File Explorer Keybinds
-vim.keymap.set("n", "<Leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle File Explorer" })
+vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { desc = "Toggle File Explorer", silent = true })
 
 -- LSP Keybindings
 vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Show Documentation" })
