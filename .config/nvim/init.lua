@@ -5,6 +5,9 @@ vim.g.loaded_netrwPlugin = 1
 -- Optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
+-- Enable system clipboard
+vim.opt.clipboard = "unnamedplus"
+
 -- Plugin Management with Lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
